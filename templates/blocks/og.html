@@ -1,0 +1,22 @@
+{# <!-- Choosing locale --> #}
+{% if OG_LOCALE %}
+  {% set default_locale = OG_LOCALE %}
+{% else %}
+  {% set default_locale = 'en_US' %}
+{% endif %}
+
+{# <!-- Choosing description --> #}
+{% if OG_DESCRIPTION %}
+    {% set description = OG_DESCRIPTION %}
+{% else %}
+    {% set description = "%s's blog" % AUTHOR %}
+{% endif %}
+
+<!-- Open Graph -->
+<meta property="og:site_name" content="{{ SITENAME }}"/>
+<meta property="og:type" content="blog"/>
+<meta property="og:title" content="{{ SITENAME }}"/>
+<meta property="og:description" content="{{ description }}"/>
+<meta property="og:locale" content="{{ default_locale }}"/>
+<meta property="og:url" content="{{ SITEURL }}"/>
+

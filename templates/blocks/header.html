@@ -1,0 +1,40 @@
+{% if HEADER_BG_IMG %}
+{% set bg_style = "background-image: url('%s')" % HEADER_BG_IMG %}
+{% elif HEADER_BG_COLOR %}
+{% set bg_style = "background-color: %s" % HEADER_BG_COLOR %}
+{% else %}
+{% set bg_style = "background-color: #002b36" %}
+{% endif %} 
+
+{% macro header(class, title, subtitle=None) %}
+<header class="{{ class }}" style="{{ bg_style }}">
+
+<nav>
+{% if output_file != 'index.html' %}
+<span id="home-button" class="nav-button"><a href="{{ SITEURL }}"><span class="icon-home"> </span>Home</a></span>
+{% endif %}
+<span id="menu-button" class="nav-button"><a href="#footer"><span class="icon-menu"> </span>Menu</a></span>
+</nav>
+
+{% if HEADER_FG_COLOR %}
+<h1 class="page-title" style="color: {{ HEADER_FG_COLOR }}!important">{{ title }}</h1>
+{% if subtitle %}
+<span class="page-subtitle" style="color: {{ HEADER_FG_COLOR }}!important">{{ subtitle }}</span>
+{% endif %}
+{% else %}
+<h1 class="page-title">{{ title }}</h1>
+{% if subtitle %}
+<span class="page-subtitle">{{ subtitle }}</span>
+{% endif %}
+{% endif %}
+
+</header>    
+{% endmacro %}
+
+{% macro sub(count,text='post') %}
+{% if count > 1 %}
+{{ '%i %ss' % (count, text) }}
+{% else %}
+{{ '%i %s' % (count, text) }}
+{% endif %}
+{% endmacro %}

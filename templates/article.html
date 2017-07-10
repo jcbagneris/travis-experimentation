@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% block title %}{{ article.title }}{% endblock %}
+
+{% if article.header_bg_img %}
+{% set bg_style = "background-image: url('%s')" % article.header_bg_img %}
+{% elif article.og_image %}
+{% set bg_style = "background-image: url('%s')" % article.og_image %}
+{% elif HEADER_BG_IMG %}
+{% set bg_style = "background-image: url('%s')" % HEADER_BG_IMG %}
+{% elif HEADER_BG_COLOR %}
+{% set bg_style = "background-color: %s" % HEADER_BG_COLOR %}
+{% else %}
+{% set bg_style = "background-color: #003388" %}
+{% endif %}        
+
+{% block head %}
+{{ super() }}
+
+<link href="{{ SITEURL }}/{{ article.url }}" rel="canonical" />
+{% for keyword in article.keywords %}
+<meta name="keywords" content="{{keyword}}" >
+{% endfor %}
+{% if description %}
+<meta name="description" content="{{ description }}">
+{% elif article.headline %}
+<meta name="description" content="{{ article.headline }}">
+{% elif article.summary %}
+<meta name="description" content="{{ article.summary|striptags|truncate(140) }}">
+{% endif %}
+{% for author in article.authors %}
+<meta name="author" content="{{ author }}">
+{% endfor %}
+{% for tag in article.tags %}
+<meta name="tags" content="{{tag}}">
+{% endfor %}
+
+{% include 'blocks/og_article.html' %}
+{% endblock %}
+
+{% block header %}
+<header class="page-header" style="{{ bg_style }}">
+
+<nav>
+<span id="home-button" class="nav-button"><a href="{{ SITEURL }}"><span class="icon-home"> </span>Home</a></span>
+<span id="menu-button" class="nav-button"><a href="#footer"><span class="icon-menu"> </span>Menu</a></span>
+</nav>
+
+{% if article.header_fg_color %}
+<h1 class="page-title" style="color: {{ article.header_fg_color }}!important">{{ article.title }}</h1>
+{% if article.headline %}
+<span class="page-subtitle" style="color: {{ article.header_fg_color }}!important">{{ article.headline }}</h3>
+{% endif %}
+<span class="page-subtitle" style="color: {{ article.header_fg_color }}!important">
+{% for author in article.authors %}
+<a href="{{ SITEURL }}/{{ author.url }}">{{ author }}</a>{% if not loop.last %}, {% endif %}
+{% endfor %} |
+<a href="{{ SITEURL }}/archives.html"><time datetime="{{ article.locale_date }}">{{ article.locale_date }}</time></a> |
+<a href="{{ SITEURL }}/{{ article.category.url }}">{{ article.category }}</a>
+</span>
+{% else %}
+<h1 class="page-title">{{ article.title }}</h1>
+{% if article.headline %}
+<span class="page-subtitle">{{ article.headline }}</h3>
+{% endif %}
+<span class="page-subtitle">
+{% for author in article.authors %}
+<a href="{{ SITEURL }}/{{ author.url }}">{{ author }}</a>{% if not loop.last %}, {% endif %}
+{% endfor %} |
+<a href="{{ SITEURL }}/archives.html"><time datetime="{{ article.locale_date }}">{{ article.locale_date }}</time></a> |
+<a href="{{ SITEURL }}/{{ article.category.url }}">{{ article.category }}</a>
+</span>
+{% endif %}
+
+</header>
+{% endblock header %}
+
+{% block content %}
+
+<article class="post">
+
+<span class="post-meta">
+{% if article.translations %}
+(this post is also available in
+{% for translation in article.translations %}
+<a href="{{ SITEURL }}/{{ translation.url }}">{{ LANG_NAME[translation.lang] }}</a>{% if not loop.last %}, {% endif %}
+{% endfor %}
+)
+{% endif %}
+</span>
+
+<section class="post-content">
+{{article.content}}
+{% if article.modified %}
+<span class="post-meta">
+(last updated on {{ article.locale_modified }})
+</span>
+{% endif %}
+</section>
+
+<section class="post-info">
+{% if article.tags %}
+<aside class="post-tags"><a href="{{ SITEURL }}/tags.html"><span class="icon-tags"></span></a>
+{% for tag in article.tags %}<a href="{{ SITEURL }}/{{ tag.url }}">{{ tag | escape }}</a>{% if not loop.last %}, {% endif %}{% endfor %}
+</aside>
+{% endif %}
+
+{% for author in article.authors %}
+{% include 'blocks/bio.html' %}
+{% endfor %}
+</section>
+
+{% if DISQUS_SITENAME and SITEURL and article.status != "draft" %}
+<script type="text/javascript">
+var disqus = '{{ DISQUS_SITENAME }}';
+var disqus_shortname = '{{ DISQUS_SITENAME }}';
+{% if article.disqus_identifier %}
+var disqus_identifier = '{{ article.disqus_identifier }}';
+{% else %}
+var disqus_identifier = '/{{ article.url }}';
+{% endif %}
+var disqus_url = '{{ SITEURL }}/{{ article.url }}';
+</script>
+<noscript>Please enable JavaScript to view the comments.</noscript>                  
+<section class="post-comments">
+{% if article.disqus_identifier %}
+<a id="show-disqus" class="post-comments-activate" data-disqus-identifier="{{ article.disqus_identifier }}" >Show Comments</a>
+{% else %}
+<a id="show-disqus" class="post-comments-activate" data-disqus-identifier="/{{ article.url }}" >Show Comments</a>
+{% endif %}
+<div id="disqus_thread"></div>                  
+</section>
+{% endif %}
+
+</article>
+{% endblock content %}

@@ -1,0 +1,17 @@
+{% extends "index.html" %}
+
+{% block title %}{{ SITENAME }} - authors{% endblock title %}
+
+{% block header %}
+{% import 'blocks/header.html' as h with context %}
+{{ h.header('page-header',self.title().replace(' - ','<br>'),h.sub(authors|count,'author')) }}
+{% endblock header %}
+
+{% block content %}
+{% for author, articles in authors|sort %}
+{% include 'blocks/bio.html' %}
+{% if not loop.last %}
+<hr>
+{% endif %}
+{% endfor %}
+{% endblock content %}

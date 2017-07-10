@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}{{ SITENAME }} - tags{% endblock %}
+
+{% block header %}
+{% import 'blocks/header.html' as h with context %}
+{{ h.header('page-header',self.title().replace(' - ','<br>'),'%i tags' % tags|count) }}
+{% endblock header %}
+
+{% block content %}
+<article class="post post-content">
+{% for tag, articles in tags|sort %}
+<a href="{{ SITEURL }}/{{ tag.url }}">{{ tag }}</a> ({{ articles|count }}){% if not loop.last %}, {% endif %}
+{% endfor %}
+</article>
+{% endblock content %}

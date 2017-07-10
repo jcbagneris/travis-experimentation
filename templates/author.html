@@ -1,0 +1,22 @@
+{% extends "index.html" %}
+
+{% block title %}{{ SITENAME }} - {{ author }} posts{% endblock %}
+
+{% block opengraph %}
+    {{ super() }}
+    <meta property="og:title" content="{{ SITENAME }} - {{ author }} posts">
+    <meta property="og:type" content="profile">
+    <meta property="profile:first_name" content="{{ author.name.split(' ')[0] }}">
+    <meta property="profile:last_name" content="{{ author.name.split(' ')[1:]|join(' ') }}">
+    <meta property="profile:username" content="{{ author.slug }}">
+{% endblock opengraph %}
+
+{% block header %}
+{% import 'blocks/header.html' as h with context %}
+{{ h.header('page-header',self.title().replace(' - ','<br>'),h.sub(articles|count)) }}
+
+<section>
+{% include 'blocks/bio.html' %}
+</section>
+
+{% endblock header %}

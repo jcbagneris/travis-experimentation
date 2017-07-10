@@ -1,0 +1,7 @@
+{% if DEFAULT_PAGINATION %}
+<nav>
+<span id="pagination-next" class="pagination">{% if articles_page.has_previous() %}<a href="{{ SITEURL }}/{{ articles_previous_page.url }}">newer posts</a>{% endif %}</span>
+<span id="pagination-info">{{ articles_page.number }} / {{ articles_paginator.num_pages }}</span>
+<span id="pagination-prev" class="pagination">{% if articles_page.has_next() %}<a href="{{ SITEURL }}/{{ articles_next_page.url }}">older posts</a>{% endif %}</span>
+</nav>
+{% endif %}

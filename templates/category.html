@@ -1,0 +1,8 @@
+{% extends "index.html" %}
+
+{% block title %}{{ SITENAME }} - posts in {{ category }}{% endblock %}
+
+{% block header %}
+{% import 'blocks/header.html' as h with context %}
+{{ h.header('page-header',self.title().replace(' - ','<br>'),h.sub(articles|count)) }}
+{% endblock header %}
