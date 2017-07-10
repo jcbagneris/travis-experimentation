@@ -9,9 +9,9 @@ before_script:
   - npm install -g postcss-cli autoprefixer cssnano
 
 script:
-  - postcss --replace static/css/normalize.css
-  - postcss --replace static/css/pygments.css
-  - postcss --replace static/css/style.css
+  - postcss --use autoprefixer cssnano --replace static/css/normalize.css
+  - postcss --use autoprefixer cssnano --replace static/css/pygment.css
+  - postcss --use autoprefixer cssnano --replace static/css/style.css
 
 deploy:
   provider: releases
