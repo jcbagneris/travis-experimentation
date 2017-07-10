@@ -1,0 +1,23 @@
+language: node_js
+node_js: node
+
+branches:
+  only:
+    - master
+
+before_script:
+  - npm install -g postcss-cli autoprefixer cssnano
+
+script:
+  - postcss --replace static/css/normalize.css
+  - postcss --replace static/css/pygments.css
+  - postcss --replace static/css/style.css
+
+deploy:
+  provider: releases
+  #  api_key: "github oauth token"
+  #  file: "file to upload"
+  skip_cleanup: true
+  on:
+    tags: true
+
