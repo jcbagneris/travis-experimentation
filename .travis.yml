@@ -10,7 +10,12 @@ script:
 #- postcss --use autoprefixer cssnano --replace static/css/pygment.css
 #- postcss --use autoprefixer cssnano --replace static/css/style.css
 before_deploy:
-- ./deploy_release.sh
+- rm -rf out || exit 0
+- mkdir out
+- cp -a ./templates out/
+- cp -a ./static out/
+- cp -f ./build/*css out/static/css/
+- tar -czf release-$TRAVIS_BUILD_NUMBER.tar.gz out
 deploy:
   provider: releases
   skip_cleanup: true
