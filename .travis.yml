@@ -16,7 +16,7 @@ deploy:
   file_glob: true
   file:
     - templates/blocks/*
-    - templates/*
+    - templates/*html
     - static/*
   on:
     repo: jcbagneris/travis-experimentation
