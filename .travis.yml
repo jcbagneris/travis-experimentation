@@ -18,5 +18,4 @@ deploy:
     - templates/*
     - static/*
   on:
-#    repo: jcbagneris/travis-experimentation
-    tags: true
+    repo: jcbagneris/travis-experimentation
