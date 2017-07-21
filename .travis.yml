@@ -17,6 +17,7 @@ deploy:
   file:
     - templates/blocks/*
     - templates/*html
-    - static/*
+    - static/css/fonts/*
+    - static/css/*css
   on:
     repo: jcbagneris/travis-experimentation
