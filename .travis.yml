@@ -48,6 +48,5 @@ deploy:
     - $RELEASE_NAME-$TRAVIS_TAG.tar.gz
     - $RELEASE_NAME-$TRAVIS_TAG.zip
   on:
-    repo: jcbagneris/travis-experimentation
-    #    branch: master
+      #    repo: jcbagneris/travis-experimentation
     tags: true
