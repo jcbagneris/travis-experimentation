@@ -32,4 +32,5 @@ deploy:
     - $RELEASE_NAME-$RELEASE_VERSION.zip
   on:
     repo: jcbagneris/travis-experimentation
-    tags: true
+    branch: master
+#    tags: true
