@@ -6,31 +6,44 @@ node_js: node
 env:
   global:
     - RELEASE_NAME=travis-test
-    - RELEASE_VERSION=`echo $TRAVIS_COMMIT|cut -c-7`
 before_script:
 - npm install -g postcss-cli autoprefixer cssnano
 script:
 - postcss --use autoprefixer cssnano -d build static/css/*.css
 before_deploy:
+- export NORMALIZE_VERSION=$(sha256sum build/normalize.css|cut -c-7)
+- export PYGMENT_VERSION=$(sha256sum build/pygment.css|cut -c-7)
+- export STYLE_VERSION=$(sha256sum build/style.css|cut -c-7)
+- export TTF_VERSION=$(sha256sum static/css/fonts/icons.ttf|cut -c-7)
+- export EOT_VERSION=$(sha256sum static/css/fonts/icons.eot|cut -c-7)
+- export SVG_VERSION=$(sha256sum static/css/fonts/icons.svg|cut -c-7)
+- export WOFF_VERSION=$(sha256sum static/css/fonts/icons.woff|cut -c-7)
+- sed -e "s/icons\.ttf/icons-$TTF_VERSION.ttf/" -i build/style.css
+- sed -e "s/icons\.eot/icons-$EOT_VERSION.eot/" -i build/style.css
+- sed -e "s/icons\.svg/icons-$SVG_VERSION.svg/" -i build/style.css
+- sed -e "s/icons\.woff/icons-$WOFF_VERSION.woff/" -i build/style.css
 - rm -rf $RELEASE_NAME || exit 0
 - mkdir $RELEASE_NAME
 - cp -a ./templates $RELEASE_NAME/
 - cp -a ./static $RELEASE_NAME/
-- cp -f ./build/normalize.css $RELEASE_NAME/static/css/normalize-$RELEASE_VERSION.css
-- cp -f ./build/pygment.css $RELEASE_NAME/static/css/pygment-$RELEASE_VERSION.css
-- cp -f ./build/style.css $RELEASE_NAME/static/css/style-$RELEASE_VERSION.css
-- sed -e "s/\.css/-$RELEASE_VERSION.css/" -i $RELEASE_NAME/templates/base.html
-- tar -czf $RELEASE_NAME-$RELEASE_VERSION.tar.gz $RELEASE_NAME
-- zip -r $RELEASE_NAME-$RELEASE_VERSION $RELEASE_NAME
+- cp -f build/*css $RELEASE_NAME/static/css/
+- mv $RELEASE_NAME/static/css/normalize.css $RELEASE_NAME/static/css/normalize-$NORMALIZE_VERSION.css
+- mv $RELEASE_NAME/static/css/pygment.css $RELEASE_NAME/static/css/pygment-$PYGMENT_VERSION.css
+- mv $RELEASE_NAME/static/css/style.css $RELEASE_NAME/static/css/style-$STYLE_VERSION.css
+- sed -e "s/normalize\.css/normalize-$NORMALIZE_VERSION.css/" -i $RELEASE_NAME/templates/base.html
+- sed -e "s/pygment\.css/pygment-$PYGMENT_VERSION.css/" -i $RELEASE_NAME/templates/base.html
+- sed -e "s/style\.css/style-$STYLE_VERSION.css/" -i $RELEASE_NAME/templates/base.html
+- tar -czf $RELEASE_NAME-$TRAVIS_TAG.tar.gz $RELEASE_NAME
+- zip -r $RELEASE_NAME-$TRAVIS_TAG $RELEASE_NAME
 deploy:
   provider: releases
   skip_cleanup: true
   api_key:
     secure: X3LcdWQ7u8+K9srcNZ5xJRLSmNL5xriOqghx7NOBdaea88X5Lp857VeAjlTilQuPz0iWD0xkV7a55Cjeb1tZafZL3n2uz71tHbK0jNyEBBC5/C1UpVyh+0QhKLiZZ/5uS/2epIoBvjyE1iUfSv+PXjaDNjC3VDh5hM01ebRSDAHI6PP2FRyXYm8s+pNlqhm32e38yoTy10wUzYAWETZC9PCYfNRe8IoL+qgmfhmBqPVT924t3tKCh+wLOJGaVCkbu5aE24/gNt+6A6HU12bA9rc2PNJ1urGZFkRcBGMRiPWLTJ3c3leDD9A/xFe6yHjrRyq/iyyx+PAsjj1HLW3pVCVRwquJJYK6P2UFYmFchWcB0KtD7bHOTdCdHKdrL7LLq7n7PgO9xIZupcXY8/CISHLy35z0fq4bqXY9cU9k62t0LV/UYbYo7jbHg6C+Vqvq/H4oEF3KQZVimnS53rB/zJqaEdWq3f9BQP5aKY7/mZUHFuqX0O8LXMUG45BrvL2cjPw/tGAxGtDtGSD1a95ZqVQvLbO/4kxbCsqero+4+/+05SzVqm5IbQqhCNfD0jNfdxNP3qXiw5khkFUlk1H63zI8KzSywgCpA8zTt+EAe40lot0QMEjnXgT2JeDEj5PWL1/uft3xe7zxgpDLJpWmFMjo3zS23MRLmsakErLhQ7M=
   file:
-    - $RELEASE_NAME-$RELEASE_VERSION.tar.gz
-    - $RELEASE_NAME-$RELEASE_VERSION.zip
+    - $RELEASE_NAME-$TRAVIS_TAG.tar.gz
+    - $RELEASE_NAME-$TRAVIS_TAG.zip
   on:
     repo: jcbagneris/travis-experimentation
     branch: master
-#    tags: true
+    tags: true
