@@ -19,9 +19,9 @@ before_deploy:
 - export SVG_VERSION=$(sha256sum static/css/fonts/icons.svg|cut -c-7)
 - export WOFF_VERSION=$(sha256sum static/css/fonts/icons.woff|cut -c-7)
 - sed -e "s/icons\.ttf/icons-$TTF_VERSION.ttf/g" -i build/style.css
-- sed -e "s/icons\.eot/icons-$EOT_VERSION.eot/" -i build/style.css
-- sed -e "s/icons\.svg/icons-$SVG_VERSION.svg/" -i build/style.css
-- sed -e "s/icons\.woff/icons-$WOFF_VERSION.woff/" -i build/style.css
+- sed -e "s/icons\.eot/icons-$EOT_VERSION.eot/g" -i build/style.css
+- sed -e "s/icons\.svg/icons-$SVG_VERSION.svg/g" -i build/style.css
+- sed -e "s/icons\.woff/icons-$WOFF_VERSION.woff/g" -i build/style.css
 - rm -rf $RELEASE_NAME || exit 0
 - mkdir $RELEASE_NAME
 - cp -a ./templates $RELEASE_NAME/
@@ -38,8 +38,7 @@ before_deploy:
 - sed -e "s/pygment\.css/pygment-$PYGMENT_VERSION.css/" -i $RELEASE_NAME/templates/base.html
 - sed -e "s/style\.css/style-$STYLE_VERSION.css/" -i $RELEASE_NAME/templates/base.html
 - tar -czf $RELEASE_NAME-$TRAVIS_TAG.tar.gz $RELEASE_NAME
-- zip -r $RELEASE_NAME-$TRAVIS_TAG $RELEASE_NAME
-- ls -la
+- zip -r $RELEASE_NAME-$TRAVIS_TAG.zip $RELEASE_NAME
 deploy:
   provider: releases
   skip_cleanup: true
@@ -50,5 +49,5 @@ deploy:
     - $RELEASE_NAME-$TRAVIS_TAG.zip
   on:
     repo: jcbagneris/travis-experimentation
-    branch: master
+    #    branch: master
     tags: true
