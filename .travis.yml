@@ -1,28 +1,34 @@
 language: node_js
 node_js: node
-branches:
-  only:
-  - master
+#branches:
+#  only:
+#  - master
+env:
+  global:
+    - RELEASE_NAME=travis-test
 before_script:
 - npm install -g postcss-cli autoprefixer cssnano
 script:
 - postcss --use autoprefixer cssnano -d build static/css/*.css
 before_deploy:
-- rm -rf release || exit 0
-- mkdir release
-- cp -a ./templates release/
-- cp -a ./static release/
-- cp -f ./build/normalize.css release/static/css/normalize-$TRAVIS_COMMIT.css
-- cp -f ./build/pygment.css release/static/css/pygment-$TRAVIS_COMMIT.css
-- cp -f ./build/style.css release/static/css/style-$TRAVIS_COMMIT.css
-- sed -e "s/\.css/-$TRAVIS_COMMIT.css/" -i release/templates/base.html
-- tar -czf release-$TRAVIS_COMMIT.tar.gz release
+- rm -rf $RELEASE_NAME || exit 0
+- mkdir $RELEASE_NAME
+- cp -a ./templates $RELEASE_NAME/
+- cp -a ./static $RELEASE_NAME/
+- cp -f ./build/normalize.css $RELEASE_NAME/static/css/normalize-$TRAVIS_COMMIT.css
+- cp -f ./build/pygment.css $RELEASE_NAME/static/css/pygment-$TRAVIS_COMMIT.css
+- cp -f ./build/style.css $RELEASE_NAME/static/css/style-$TRAVIS_COMMIT.css
+- sed -e "s/\.css/-$TRAVIS_COMMIT.css/" -i $RELEASE_NAME/templates/base.html
+- tar -czf $RELEASE_NAME-$TRAVIS_COMMIT.tar.gz $RELEASE_NAME
+- zip $RELEASE_NAME-$TRAVIS_COMMIT $RELEASE_NAME
 deploy:
   provider: releases
   skip_cleanup: true
   api_key:
     secure: X3LcdWQ7u8+K9srcNZ5xJRLSmNL5xriOqghx7NOBdaea88X5Lp857VeAjlTilQuPz0iWD0xkV7a55Cjeb1tZafZL3n2uz71tHbK0jNyEBBC5/C1UpVyh+0QhKLiZZ/5uS/2epIoBvjyE1iUfSv+PXjaDNjC3VDh5hM01ebRSDAHI6PP2FRyXYm8s+pNlqhm32e38yoTy10wUzYAWETZC9PCYfNRe8IoL+qgmfhmBqPVT924t3tKCh+wLOJGaVCkbu5aE24/gNt+6A6HU12bA9rc2PNJ1urGZFkRcBGMRiPWLTJ3c3leDD9A/xFe6yHjrRyq/iyyx+PAsjj1HLW3pVCVRwquJJYK6P2UFYmFchWcB0KtD7bHOTdCdHKdrL7LLq7n7PgO9xIZupcXY8/CISHLy35z0fq4bqXY9cU9k62t0LV/UYbYo7jbHg6C+Vqvq/H4oEF3KQZVimnS53rB/zJqaEdWq3f9BQP5aKY7/mZUHFuqX0O8LXMUG45BrvL2cjPw/tGAxGtDtGSD1a95ZqVQvLbO/4kxbCsqero+4+/+05SzVqm5IbQqhCNfD0jNfdxNP3qXiw5khkFUlk1H63zI8KzSywgCpA8zTt+EAe40lot0QMEjnXgT2JeDEj5PWL1/uft3xe7zxgpDLJpWmFMjo3zS23MRLmsakErLhQ7M=
   file:
-    - release-$TRAVIS_COMMIT.tar.gz
+    - $RELEASE_NAME-$TRAVIS_COMMIT.tar.gz
+    - $RELEASE_NAME-$TRAVIS_COMMIT.zip
   on:
     repo: jcbagneris/travis-experimentation
+    branch: master
