@@ -18,7 +18,7 @@ before_deploy:
 - export EOT_VERSION=$(sha256sum static/css/fonts/icons.eot|cut -c-7)
 - export SVG_VERSION=$(sha256sum static/css/fonts/icons.svg|cut -c-7)
 - export WOFF_VERSION=$(sha256sum static/css/fonts/icons.woff|cut -c-7)
-- sed -e "s/icons\.ttf/icons-$TTF_VERSION.ttf/" -i build/style.css
+- sed -e "s/icons\.ttf/icons-$TTF_VERSION.ttf/g" -i build/style.css
 - sed -e "s/icons\.eot/icons-$EOT_VERSION.eot/" -i build/style.css
 - sed -e "s/icons\.svg/icons-$SVG_VERSION.svg/" -i build/style.css
 - sed -e "s/icons\.woff/icons-$WOFF_VERSION.woff/" -i build/style.css
@@ -27,6 +27,10 @@ before_deploy:
 - cp -a ./templates $RELEASE_NAME/
 - cp -a ./static $RELEASE_NAME/
 - cp -f build/*css $RELEASE_NAME/static/css/
+- mv $RELEASE_NAME/static/css/fonts/icons.ttf $RELEASE_NAME/static/css/fonts/icons-$TTF_VERSION.ttf
+- mv $RELEASE_NAME/static/css/fonts/icons.eot $RELEASE_NAME/static/css/fonts/icons-$EOT_VERSION.eot
+- mv $RELEASE_NAME/static/css/fonts/icons.svg $RELEASE_NAME/static/css/fonts/icons-$SVG_VERSION.svg
+- mv $RELEASE_NAME/static/css/fonts/icons.woff $RELEASE_NAME/static/css/fonts/icons-$WOFF_VERSION.woff
 - mv $RELEASE_NAME/static/css/normalize.css $RELEASE_NAME/static/css/normalize-$NORMALIZE_VERSION.css
 - mv $RELEASE_NAME/static/css/pygment.css $RELEASE_NAME/static/css/pygment-$PYGMENT_VERSION.css
 - mv $RELEASE_NAME/static/css/style.css $RELEASE_NAME/static/css/style-$STYLE_VERSION.css
@@ -35,6 +39,7 @@ before_deploy:
 - sed -e "s/style\.css/style-$STYLE_VERSION.css/" -i $RELEASE_NAME/templates/base.html
 - tar -czf $RELEASE_NAME-$TRAVIS_TAG.tar.gz $RELEASE_NAME
 - zip -r $RELEASE_NAME-$TRAVIS_TAG $RELEASE_NAME
+- ls -la
 deploy:
   provider: releases
   skip_cleanup: true
